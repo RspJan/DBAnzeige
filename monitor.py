@@ -27,7 +27,7 @@ statResponse= requests.post('https://reiseauskunft.bahn.de/bin/query.exe/dol', d
 townPos= statResponse.find('Station name')
 townPosE= statResponse.find('"',townPos+15)
 town=statResponse[townPos+14:townPosE]
-print '\n\nBahnhof: '+town+'\n\n'
+print ('\n\nBahnhof: '+town+'\n\n')
 StatNbrPos= statResponse.find('ionNr="')
 StatNbrPosE= statResponse.find('"',StatNbrPos+9)
 station=statResponse[StatNbrPos+7:StatNbrPosE]
@@ -35,8 +35,12 @@ station=statResponse[StatNbrPos+7:StatNbrPosE]
 
 txt = "The rain in Spain"
 
-
-
+def XmlFind(response,search,term,pos):
+    posA=response.find(search,pos)+len(search)+2
+    posE=response.find(term,posA)
+    strgneu=''
+    strgneu=response[posA:posE]
+    return strgneu
 
 
 		
@@ -54,15 +58,9 @@ while pos != -1:
 	pos= response.find('<Journey',posneu+2)
 	posE=response.find('</Jour',posneu+20)
 	strgneu=response[posneu:posE]
-	posTim= strgneu.find('fpTime=')
-	posTimE=strgneu.find('"',posTim+8)
-	time= strgneu[posTim+8:posTimE]
-	poseDel= strgneu.find('e_delay')
-	poseDelE=strgneu.find('"',poseDel+10)
-	edel= strgneu[poseDel+9:poseDelE]
-	posDel= strgneu.find('delay')
-	posDelE =strgneu.find('"',posDel+8)
-	delay= strgneu[posDel+7:posDelE]
+	time=XmlFind(response,'fpTime','"',posneu)
+	edel=XmlFind(response,'e_delay','"',posneu)
+	delay=XmlFind(response,'delay','"',posneu)
 	posDir= strgneu.find('prod=')
 	posDirE =strgneu.find('"',posDir+7)
 	dir= strgneu[posDir+6:posDirE]
@@ -111,6 +109,6 @@ while pos != -1:
 	
 
 	
-	print '\n_______________________________________________________________________________________\n'
+	print ('\n_______________________________________________________________________________________\n')
 	
 ''' " fpDate="13.02.20" delay="0" e_delay="0" targetLoc="Tivoli, Karlsruhe" dirnr="722029" prod="STR    4#STR" dir="4 Tivoli ber Hbf" administration="kvvSTR" is_reachable="0" delayReason=" " approxDelay="0"></Journey> '''
